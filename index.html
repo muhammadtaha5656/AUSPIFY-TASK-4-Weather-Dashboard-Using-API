@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Auspify Weather — a polished real-time weather dashboard built with HTML, CSS and JavaScript.">
+  <title>Auspify Weather Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="weather-effects" id="weatherEffects" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Auspify Weather home">
+      <span class="brand-mark">A</span>
+      <span>
+        <strong>Auspify</strong>
+        <small>WEATHER</small>
+      </span>
+    </a>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">☾</button>
+      <button class="unit-btn active" data-unit="C">°C</button>
+      <button class="unit-btn" data-unit="F">°F</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="status-dot"></span> LIVE WEATHER DASHBOARD</span>
+        <h1>Know your sky.<br><span>Plan your day.</span></h1>
+        <p>Real-time conditions, hourly trends and a 7-day outlook in one clean dashboard.</p>
+      </div>
+
+      <div class="search-wrap">
+        <form id="searchForm" class="search-box">
+          <span class="search-icon">⌕</span>
+          <input id="cityInput" type="text" placeholder="Search city, e.g. Karachi" autocomplete="off" required>
+          <button type="submit">Search</button>
+        </form>
+        <div class="search-hint">
+          <button id="locationBtn" class="text-btn">◎ Use my location</button>
+          <span id="apiStatus">Connected to weather service</span>
+        </div>
+        <div id="searchSuggestions" class="suggestions hidden"></div>
+      </div>
+    </section>
+
+    <div id="loading" class="state-card hidden">
+      <div class="spinner"></div>
+      <div>
+        <strong>Updating weather</strong>
+        <p>Fetching the latest conditions...</p>
+      </div>
+    </div>
+
+    <div id="errorState" class="state-card error hidden">
+      <div class="state-icon">!</div>
+      <div>
+        <strong id="errorTitle">Location not found</strong>
+        <p id="errorMessage">Try searching for a nearby city.</p>
+      </div>
+      <button id="retryBtn" class="outline-btn">Retry</button>
+    </div>
+
+    <section id="dashboard" class="dashboard">
+      <div class="dashboard-heading">
+        <div>
+          <div class="location-line">
+            <span class="pin">●</span>
+            <h2 id="locationName">Karachi</h2>
+            <button id="favoriteBtn" class="favorite-btn" aria-label="Add to favorites">☆</button>
+          </div>
+          <p id="locationMeta">Pakistan · Local time</p>
+        </div>
+        <div class="updated">
+          <span>Last updated</span>
+          <strong id="updatedTime">—</strong>
+        </div>
+      </div>
+
+      <div class="main-grid">
+        <article class="current-card glass-card">
+          <div class="current-top">
+            <div>
+              <span class="card-label">CURRENT WEATHER</span>
+              <div class="date" id="currentDate">Wednesday, September 9</div>
+            </div>
+            <span id="conditionBadge" class="condition-badge">Clear</span>
+          </div>
+
+          <div class="current-main">
+            <div class="weather-visual" id="weatherIcon">☀</div>
+            <div class="temperature">
+              <strong id="temperature">—</strong><span id="tempUnit">°C</span>
+              <p id="condition">Clear sky</p>
+            </div>
+          </div>
+
+          <div class="feels">
+            Feels like <strong id="feelsLike">—</strong><span id="feelsUnit">°C</span>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric"><span>Humidity</span><strong id="humidity">—</strong><small>%</small></div>
+            <div class="metric"><span>Wind</span><strong id="wind">—</strong><small id="windUnit">km/h</small></div>
+            <div class="metric"><span>Pressure</span><strong id="pressure">—</strong><small>hPa</small></div>
+            <div class="metric"><span>Visibility</span><strong id="visibility">—</strong><small>km</small></div>
+          </div>
+        </article>
+
+        <aside class="side-stack">
+          <article class="sun-card glass-card">
+            <div class="card-heading">
+              <span class="card-label">DAYLIGHT</span>
+              <span>☀</span>
+            </div>
+            <div class="sun-row">
+              <div><span>Sunrise</span><strong id="sunrise">—</strong></div>
+              <div class="sun-track"><i id="sunProgress"></i></div>
+              <div><span>Sunset</span><strong id="sunset">—</strong></div>
+            </div>
+          </article>
+
+          <article class="quick-card glass-card">
+            <div class="card-heading">
+              <span class="card-label">TODAY AT A GLANCE</span>
+            </div>
+            <div class="quick-grid">
+              <div><span>High</span><strong id="todayHigh">—</strong></div>
+              <div><span>Low</span><strong id="todayLow">—</strong></div>
+              <div><span>Rain chance</span><strong id="rainChance">—</strong></div>
+              <div><span>Wind gust</span><strong id="windGust">—</strong></div>
+            </div>
+          </article>
+        </aside>
+      </div>
+
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">NEXT HOURS</span>
+            <h3>Hourly forecast</h3>
+          </div>
+          <span class="section-note">Next 12 hours</span>
+        </div>
+        <div id="hourlyList" class="hourly-list"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">THE WEEK AHEAD</span>
+            <h3>7-day forecast</h3>
+          </div>
+          <span class="section-note">Daily outlook</span>
+        </div>
+        <div id="dailyList" class="daily-list"></div>
+      </section>
+
+      <section class="section insights-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">WEATHER INSIGHTS</span>
+            <h3>Useful details</h3>
+          </div>
+        </div>
+        <div class="insight-grid">
+          <article class="insight glass-card"><span class="insight-icon">UV</span><div><small>UV index</small><strong id="uvIndex">—</strong><p id="uvText">—</p></div></article>
+          <article class="insight glass-card"><span class="insight-icon">↗</span><div><small>Wind direction</small><strong id="windDirection">—</strong><p id="windDirectionText">—</p></div></article>
+          <article class="insight glass-card"><span class="insight-icon">☂</span><div><small>Rain today</small><strong id="rainTotal">—</strong><p>Expected precipitation</p></div></article>
+          <article class="insight glass-card"><span class="insight-icon">◷</span><div><small>Timezone</small><strong id="timezone">—</strong><p>Local forecast time</p></div></article>
+        </div>
+      </section>
+
+      <section class="favorites-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">QUICK ACCESS</span>
+            <h3>Recent & favorite cities</h3>
+          </div>
+          <button id="clearCitiesBtn" class="text-btn">Clear history</button>
+        </div>
+        <div id="cityChips" class="city-chips"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Auspify Weather</span>
+    <span>Built with HTML · CSS · JavaScript · REST APIs</span>
+  </footer>
+
+  <script src="js/weather-api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

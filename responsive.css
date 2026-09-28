@@ -1,0 +1,24 @@
+@media (max-width: 600px) {
+  .topbar, .container, footer { width: min(100% - 24px, 1160px); }
+  .topbar { padding:15px 0; }
+  .hero { padding:35px 0 28px; gap:28px; }
+  .hero h1 { font-size:43px; letter-spacing:-2.3px; }
+  .hero p { font-size:13px; }
+  .search-hint { flex-direction:column; gap:7px; }
+  .dashboard-heading { align-items:flex-start; gap:15px; }
+  .updated { display:none; }
+  .current-card { padding:20px; }
+  .current-main { gap:12px; padding:25px 0 18px; }
+  .weather-visual { width:82px; height:82px; border-radius:24px; font-size:55px; }
+  .temperature strong { font-size:67px; letter-spacing:-5px; }
+  .temperature > span { font-size:18px; }
+  .metric-grid { grid-template-columns:1fr 1fr; row-gap:18px; }
+  .hourly-list { grid-template-columns:repeat(3,1fr); }
+  .hour-card:nth-child(n+10) { display:none; }
+  .day-row { grid-template-columns:1fr 35px 70px; gap:8px; padding:15px 13px; }
+  .day-condition, .rain-percent { display:none; }
+  .temp-range { display:block; }
+  .temp-range span { display:block; }
+  .insight-grid { grid-template-columns:1fr; }
+  footer { flex-direction:column; gap:8px; }
+}
